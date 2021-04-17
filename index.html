@@ -144,18 +144,26 @@
 
   const imgURL = dt =>
     `https://api.rethumb.com/v1/height/120/http://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_${dt}0000dBR.dpsri.png`;
+  const imgURL2 = dt =>
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`http://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_${dt}0000dBR.dpsri.png`)}`;
   const $radar = document.getElementById("radar");
   const $dtField = document.getElementById("dt-field");
   const canvas = document.createElement('canvas');
   const $download = document.getElementById('download-button');
   const $textarea = document.getElementById('textarea');
 
+  var loadedRadar2 = false;
   function render(dt) {
     $download.className = 'disabled';
     $textarea.disabled = true;
 
     $radar.onload = function() {
       canvas.width = $radar.width;
+      if ($radar.height !== 120 && !loadedRadar2) {
+        $radar.src = imgURL2(dt);
+        loadedRadar2 = true;
+        return;
+      }
       canvas.height = $radar.height;
       const context = canvas.getContext('2d');
       context.drawImage($radar, 0, 0, $radar.width, $radar.height);
